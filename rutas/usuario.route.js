@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var bcryptjs = require('bcryptjs');
 var rows = require('../config/config').ROWS_POR_PAG;
 var mdAuthenticationJWT = require('../middlewares/authentication');
 //variable de conexion a postgres
@@ -69,6 +70,16 @@ app.post('/', mdAuthenticationJWT.verificarToken, (req, res) => {
 
     //Recibo los datos en el body y con el body parser me lo transforma a JSON
     var body = req.body;
+    //encripto password
+    if (body.opcion === 'I') {
+        body.json.password_user = bcryptjs.hashSync(body.json.password_user, 10);
+        console.log(JSON.stringify(body));
+    } else {
+        if (body.json.password_user != body.json.password2) {
+            body.json.password_user = bcryptjs.hashSync(body.json.password_user, 10);
+        }
+    }
+
     consulta = `SELECT * FROM ${datos_tabla.sp_crud_tabla} ($1,$2)`;
     crud.crudBasico(datos_tabla.tabla_target, consulta, body, res);
 
