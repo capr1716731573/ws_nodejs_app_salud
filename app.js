@@ -6,8 +6,11 @@ var geografia_route = require('./rutas/geografia.route');
 var profesion_route = require('./rutas/profesion.route');
 var nivel_educacion_route = require('./rutas/nivel_educacion.route');
 var auxiliar_diagnostico_route = require('./rutas/auxiliar_diagnostico.route');
+var exameneslab_route = require('./rutas/examenlab.route');
 var captacion_vacunas_route = require('./rutas/captacion_vacunas.route');
+var tipo_vacunas_route = require('./rutas/tipo_vacunas.route');
 var grupo_antecedentes_route = require('./rutas/grupo_antecedentes.route');
+var tipo_antecedentes_route = require('./rutas/tipo_antecedentes.route');
 var grupo_sanguineo_route = require('./rutas/grupo_sanguineo.route');
 var etnia_route = require('./rutas/etnia.route');
 var usuario_route = require('./rutas/usuario.route');
@@ -25,6 +28,7 @@ var especialidad_route = require('./rutas/especialidad.route');
 var especialidad_user_route = require('./rutas/especialidad_user.route');
 var tipo_organos_sistemas_route = require('./rutas/tipo_organos_sistemas.route');
 var tipo_examen_route = require('./rutas/tipo_examen.route');
+var region_tipo_examen_route = require('./rutas/regiones_tipexamen.route');
 var login_route = require('./rutas/login.route');
 
 //Inicializar variables 
@@ -48,8 +52,11 @@ app.use('/geografia', geografia_route);
 app.use('/profesion', profesion_route);
 app.use('/nivel_educacion', nivel_educacion_route);
 app.use('/auxiliar_diagnostico', auxiliar_diagnostico_route);
+app.use('/examenes_lab', exameneslab_route);
 app.use('/captacion_vacunas', captacion_vacunas_route);
+app.use('/tipo_vacunas', tipo_vacunas_route);
 app.use('/grupo_antecedentes', grupo_antecedentes_route);
+app.use('/tipo_antecedentes', tipo_antecedentes_route);
 app.use('/grupo_sanguineo', grupo_sanguineo_route);
 app.use('/etnia', etnia_route);
 app.use('/usuarios', usuario_route);
@@ -67,6 +74,7 @@ app.use('/especialidad', especialidad_route);
 app.use('/especialidad_user', especialidad_user_route);
 app.use('/tipo_organos_sistemas', tipo_organos_sistemas_route);
 app.use('/tipo_examen', tipo_examen_route);
+app.use('/region_tipo_examen', region_tipo_examen_route);
 app.use('/login', login_route);
 
 //Configuracion 2 ->Escuchar peticiones
