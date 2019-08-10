@@ -11,7 +11,7 @@ var crud = require('../funciones/crud_operaciones');
 var datos_tabla = {
     tabla_target: 'tipo_examen',
     pk_tabla: 'pk_tipexa',
-    sp_crud_tabla: 'sp_salud_crud_tipo_examen'
+    sp_crud_tabla: 'sp_salud_crud_tipo_examen_fisico'
 }
 
 //Rutas
