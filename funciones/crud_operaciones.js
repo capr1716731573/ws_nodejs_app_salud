@@ -65,7 +65,6 @@ funcionesCrud.getID = function(tabla_target, id, consulta, res) {
                 errors: { message: `No existe un ${ tabla_target } con es ID` }
             });
         }
-        console.log(response);
         res.status(200).json({
             status: 'ok',
             data: response.rows[0]
@@ -96,7 +95,6 @@ funcionesCrud.getValidar = function(metodo, valor, consulta, res) {
                 errors: { message: `No existe metodo ${ metodo }, con el valor ${ valor }` }
             });
         }
-        console.log(response);
         res.status(200).json({
             status: 'ok',
             data: response.rows[0]
