@@ -25,6 +25,16 @@ app.get('/:pk_grupant', mdAuthenticationJWT.verificarToken, (req, res, next) => 
     crud.getAll(datos_tabla.tabla_target, consulta, res);
 });
 
+// ==========================================
+// Obtener todos los registros ACTIVOS
+// ========================================== 
+app.get('/activos/:pk_grupant', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+    var pk_grupant = req.params.pk_grupant;
+    var consulta;
+    consulta = "select * from tipo_antecedentes ta INNER JOIN grupo_antecedentes a on ta.pk_grupant = a.pk_grupant where ta.pk_grupant=" + pk_grupant + " AND ta.activo_tipant=true  order by ta.nombre_tipant";
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
 
 
 // ==========================================

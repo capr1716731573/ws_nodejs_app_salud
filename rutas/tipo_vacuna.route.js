@@ -25,6 +25,16 @@ app.get('/:pk_tipcap', mdAuthenticationJWT.verificarToken, (req, res, next) => {
     crud.getAll(datos_tabla.tabla_target, consulta, res);
 });
 
+// ==========================================
+// Obtener todos los registros ACTIVOS
+// ========================================== 
+app.get('/activos/:pk_tipcap', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+    var pk_tipcap = req.params.pk_tipcap;
+    var consulta;
+    consulta = "select * from tipo_vacuna tp INNER JOIN captacion_vacunas v on tp.pk_tipcap = v.pk_tipcap where v.pk_tipcap=" + pk_tipcap + " AND tp.activo_tipvac=true  order by tp.nombre_tipvac";
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
 
 
 // ==========================================

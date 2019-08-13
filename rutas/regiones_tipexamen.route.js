@@ -26,6 +26,16 @@ app.get('/:pk_tipexa', mdAuthenticationJWT.verificarToken, (req, res, next) => {
 });
 
 
+// ==========================================
+// Obtener todos los registros ACTIVOS
+// ========================================== 
+app.get('/activos/:pk_tipexa', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+    var pk_tipexa = req.params.pk_tipexa;
+    var consulta;
+    consulta = "select * from regiones r INNER JOIN tipo_examen t on r.pk_tipexa = t.pk_tipexa  where r.pk_tipexa=" + pk_tipexa + " AND r.activo_regexa=TRUE order by r.nombre_regexa";
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
 
 // ==========================================
 // Obtener registro por ID

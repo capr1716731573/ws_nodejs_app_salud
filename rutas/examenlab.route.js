@@ -26,6 +26,17 @@ app.get('/:pk_auxdiag', mdAuthenticationJWT.verificarToken, (req, res, next) => 
 });
 
 
+// ==========================================
+// Obtener todos los registros ACTIVOS
+// ========================================== 
+app.get('/activos/:pk_auxdiag', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+    var pk_auxdiag = req.params.pk_auxdiag;
+    var consulta;
+    consulta = "SELECT * from examen e INNER JOIN auxiliar_diagnostico a on e.pk_auxdiag = a.pk_auxdiag  where a.pk_auxdiag=" + pk_auxdiag + " and e.activo_exa=true order by e.nombre_exa";
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
+
 
 // ==========================================
 // Obtener registro por ID
