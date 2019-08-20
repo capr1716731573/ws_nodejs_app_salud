@@ -21,9 +21,43 @@ var datos_tabla = {
 app.get('/:pk_user', mdAuthenticationJWT.verificarToken, (req, res, next) => {
     var pk_user = req.params.pk_user;
     var consulta;
-    consulta = "select em.pk_user, em.pk_espec, em.audit_creacion, em.audit_modificacion, e.nombre_espec, coalesce(em.codmsp_espcmed,'SIN CÓDIGO') AS codmsp_espcmed, coalesce(em.senecyt_espmed,'SIN REGISTRO') AS senecyt_espmed " +
+    consulta = "select em.pk_user, em.pk_espec, em.audit_creacion, em.audit_modificacion, e.nombre_espec, coalesce(em.codmsp_espcmed,'SIN CÓDIGO') AS codmsp_espcmed, coalesce(em.senecyt_espcmed,'SIN REGISTRO') AS senecyt_espcmed " +
         "from especialidad_medico em INNER JOIN especialidad e on em.pk_espec = e.pk_espec " +
         "WHERE em.pk_user=" + pk_user + "  ORDER BY e.nombre_espec";
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
+//Rutas
+// ==========================================
+// Obtener todos los Medicos Visibles
+// ========================================== 
+app.get('/', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+
+    var consulta = "select " +
+        " em.pk_espemed, " +
+        " em.pk_user, " +
+        " persona.nombres_person, " +
+        " persona.apellidos_person, " +
+        " persona.numidentificacion_person, " +
+        " profesion.nombre_prof, " +
+        " profesion.siglas_prof, " +
+        " concat(profesion.siglas_prof,' ',persona.nombres_person,' ',persona.apellidos_person) AS nombres_completos, " +
+        " em.pk_espec, " +
+        " em.audit_creacion, " +
+        " em.audit_modificacion, " +
+        " e.nombre_espec, " +
+        " coalesce(em.codmsp_espcmed,'SIN CÓDIGO') AS codmsp_espcmed, " +
+        " coalesce(em.senecyt_espcmed,'SIN REGISTRO') AS senecyt_espcmed " +
+        " from especialidad_medico em " +
+        " INNER JOIN usuario " +
+        " INNER JOIN persona " +
+        " INNER JOIN profesion " +
+        " on persona.pk_prof = profesion.pk_prof " +
+        " on usuario.pk_person = persona.pk_person " +
+        " on em.pk_user = usuario.pk_user " +
+        " INNER JOIN especialidad e on em.pk_espec = e.pk_espec " +
+        " where usuario.visible_user=true "
+    " ORDER BY e.nombre_espec";
     crud.getAll(datos_tabla.tabla_target, consulta, res);
 });
 
@@ -37,7 +71,7 @@ app.get('/:pk_user/:pk_especialidad', (req, res) => {
     var pk_user = req.params.pk_user;
     var pk_especialidad = req.params.pk_especialidad;
     //consulta si existen un registro del existente
-    consulta = "select em.pk_user, em.pk_espec, em.audit_creacion, em.audit_modificacion, e.nombre_espec, coalesce(em.codmsp_espcmed,'SIN CÓDIGO') AS codmsp_espcmed, coalesce(em.senecyt_espmed,'SIN REGISTRO') AS senecyt_espmed " +
+    consulta = "select em.pk_espemed,em.pk_user, em.pk_espec, em.audit_creacion, em.audit_modificacion, e.nombre_espec, coalesce(em.codmsp_espcmed,'SIN CÓDIGO') AS codmsp_espcmed, coalesce(em.senecyt_espcmed,'SIN REGISTRO') AS senecyt_espcmed " +
         "from especialidad_medico em INNER JOIN especialidad e on em.pk_espec = e.pk_espec " +
         "WHERE em.pk_user=" + pk_user + " AND em.pk_espec=" + pk_especialidad + "  ORDER BY e.nombre_espec";
     //LLamo al archivo CRUD OPERACIONES

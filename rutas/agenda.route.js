@@ -15,27 +15,62 @@ var datos_tabla = {
 }
 
 var consulta_base = ` SELECT
-                a.pk_age,
-                a.pk_ubigeo,
-                a.nombres_age,
-                a.apellidos_age,
-                a.fecha_age,
-                a.hora_age,
-                a.medio_age,
-                a.telefono_age,
-                a.celular_age,
-                (select * from sp_salud_getgeografia(a.pk_ubigeo)) as geografia_agenda 
-                from agenda a`
+                    a.pk_age,
+                    a.pk_ubigeo,
+                    a.pk_espemed,
+                    a.nombres_age,
+                    a.apellidos_age,
+                    a.fecha_age,
+                    to_char(a.hora_age, 'HH24:MI') as hora_age,
+                    a.medio_age,
+                    a.telefono_age,
+                    a.celular_age,
+                    a.estado_age,
+                    a.audit_creacion,
+                    a.audit_modificacion,
+                    (select * from sp_salud_getgeografia(a.pk_ubigeo)) as geografia_agenda,
+                    em.pk_user,
+                    em.pk_espec,
+                    p.numidentificacion_person,
+                    p.nombres_person,
+                    p.apellidos_person,
+                    p2.nombre_prof,
+                    p2.siglas_prof,
+                    e.nombre_espec
+                    from agenda a INNER JOIN especialidad_medico em
+                            inner join especialidad e
+                            on em.pk_espec = e.pk_espec
+                            inner join usuario u
+                            inner join persona p
+                            inner join profesion p2
+                            on p.pk_prof = p2.pk_prof
+                            on u.pk_person = p.pk_person
+                            on em.pk_user = u.pk_user
+                            on a.pk_espemed = em.pk_espemed`
 
 //Rutas
 // ==========================================
 // Obtener todos los registros TODOS x PADRE
 // ========================================== 
 app.get('/', mdAuthenticationJWT.verificarToken, (req, res, next) => {
-    consulta = `${consulta_base} order by fecha_age ASC, hora_age ASC, nombres_age ASC, apellidos_age ASC`;
+
+    var fecha_inicio = `'${req.query.fecha_inicio}'::date`;
+    var fecha_fin = `'${req.query.fecha_fin}'::date`;
+
+    if (fecha_inicio === null) fecha_inicio = "(now()::date-'1 month'::interval)::date";
+    if (fecha_fin === null) fecha_fin = "(now()::date+'1 month'::interval)::date";
+
+    var desde = req.query.desde;
+    desde = Number(desde);
+    var consulta;
+    //valido que exista el parametro "desde"
+    consulta = `${consulta_base} where a.fecha_age >=${fecha_inicio} AND a.fecha_age <=${fecha_fin} order by a.fecha_age DESC, a.hora_age ASC, a.nombres_age ASC, a.apellidos_age ASC`;
+
 
     crud.getAll(datos_tabla.tabla_target, consulta, res);
 });
+
+
 
 
 // ==========================================
@@ -62,6 +97,7 @@ app.post('/', mdAuthenticationJWT.verificarToken, (req, res) => {
     crud.crudBasico(datos_tabla.tabla_target, consulta, body, res);
 
 });
+
 
 
 module.exports = app;

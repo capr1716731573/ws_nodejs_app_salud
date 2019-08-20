@@ -51,7 +51,40 @@ var consulta_provincia = "SELECT " +
     "p.nombre_ubigeo as nombre_provincia " +
     "FROM geografia p " +
     "INNER JOIN geografia n ON p.fk_padre=n.pk_ubigeo " +
-    "WHERE p.tipo_ubigeo='P' and p.pk_ubigeo="
+    "WHERE p.tipo_ubigeo='P' and p.pk_ubigeo=";
+
+var pk_pais = 74 //Se refiere a ECUADOR
+
+var consultaTodosXPais = "SELECT pk_ubigeo,nombre_ubigeo,fk_padre, " +
+    " (CASE tipo_ubigeo" +
+    "      WHEN 'N' THEN 'PAÍS'" +
+    "      WHEN 'P' THEN 'PROVINCIA'" +
+    "      WHEN 'C' THEN 'CIUDAD'" +
+    "      WHEN 'PR' THEN 'PARROQUIA' END) tipo" +
+    " FROM geografia WHERE pk_ubigeo=" + pk_pais + " AND tipo_ubigeo='N'" +
+    " UNION" +
+    " SELECT pk_ubigeo,nombre_ubigeo,fk_padre," +
+    " (CASE tipo_ubigeo" +
+    "      WHEN 'N' THEN 'PAÍS'" +
+    "      WHEN 'P' THEN 'PROVINCIA'" +
+    "      WHEN 'C' THEN 'CIUDAD'" +
+    "      WHEN 'PR' THEN 'PARROQUIA' END) tipo FROM geografia WHERE fk_padre=" + pk_pais + " AND tipo_ubigeo='P'" +
+    " UNION" +
+    " SELECT pk_ubigeo,nombre_ubigeo,fk_padre," +
+    " (CASE tipo_ubigeo" +
+    "      WHEN 'N' THEN 'PAÍS'" +
+    "      WHEN 'P' THEN 'PROVINCIA'" +
+    "      WHEN 'C' THEN 'CIUDAD'" +
+    "      WHEN 'PR' THEN 'PARROQUIA' END) tipo FROM geografia WHERE tipo_ubigeo='C' AND fk_padre<=284" +
+    " UNION" +
+    " SELECT pk_ubigeo,nombre_ubigeo,fk_padre," +
+    " (CASE tipo_ubigeo" +
+    "      WHEN 'N' THEN 'PAÍS'" +
+    "      WHEN 'P' THEN 'PROVINCIA'" +
+    "      WHEN 'C' THEN 'CIUDAD'" +
+    "      WHEN 'PR' THEN 'PARROQUIA' END) tipo FROM geografia WHERE tipo_ubigeo='PR'" +
+    " ORDER BY pk_ubigeo ASC, fk_padre ASC";
+
 
 var consulta_def = {
     consulta: null,
@@ -77,6 +110,20 @@ app.get('/:fk_padre', mdAuthenticationJWT.verificarToken, (req, res, next) => {
     }
     crud.getAll(datos_tabla.tabla_target, consulta, res);
 });
+
+//Rutas
+// ==========================================
+// Obtener todos los registros TODOS Ordenados
+// ========================================== 
+app.get('/', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+
+    //SOLO SELECCIONO LA UBICACION GEOGRAFICA DE ECUADOR
+    consulta = consultaTodosXPais;
+
+
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
 
 // ==========================================
 // Obtener todos los registros busqueda avanzada por parametros
