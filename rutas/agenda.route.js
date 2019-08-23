@@ -50,7 +50,7 @@ var consulta_base = ` SELECT
 
 //Rutas
 // ==========================================
-// Obtener todos los registros TODOS x PADRE
+// Obtener todos los registros por intervalos de fecha de inicio y fin
 // ========================================== 
 app.get('/', mdAuthenticationJWT.verificarToken, (req, res, next) => {
 
@@ -65,6 +65,24 @@ app.get('/', mdAuthenticationJWT.verificarToken, (req, res, next) => {
     var consulta;
     //valido que exista el parametro "desde"
     consulta = `${consulta_base} where a.fecha_age >=${fecha_inicio} AND a.fecha_age <=${fecha_fin} order by a.fecha_age DESC, a.hora_age ASC, a.nombres_age ASC, a.apellidos_age ASC`;
+
+
+    crud.getAll(datos_tabla.tabla_target, consulta, res);
+});
+
+
+//Rutas
+// ==========================================
+// Obtener todos los registros por medico y fecha
+// ========================================== 
+app.get('/citasXDia', mdAuthenticationJWT.verificarToken, (req, res, next) => {
+
+    var pk_espemed = req.query.pk_espemed;
+    var fecha = `'${req.query.fecha}'::date`;
+    pk_espemed = Number(pk_espemed);
+    var consulta;
+    //valido que exista el parametro "desde"
+    consulta = `${consulta_base} where a.fecha_age =${fecha} AND a.pk_espemed =${pk_espemed} order by a.fecha_age DESC, a.hora_age ASC, a.nombres_age ASC, a.apellidos_age ASC`;
 
 
     crud.getAll(datos_tabla.tabla_target, consulta, res);
